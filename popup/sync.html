@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="sync.css"/>
+  </head>
+
+<body>
+  <div id="outter-wrapper">
+    <div class="local-content content-div">
+      <input type="button" value="Reload" id="local-load"/>
+      <input type="button" value="Update" id="local-update"/>
+      <div class="data-container" id="local-team">Empty Local Team Data</div>
+    </div>
+
+    <div class="remote-content content-div">
+      <form>
+        <input type="url" id="webdav-url" placeholder="https://dav."/>
+        <input type="text" id="webdav-username" placeholder="username" />
+        <input type="password" id="webdav-password" placeholder="password" />
+        <input type="button" value="Test" id="remote-test"/>
+        <input type="reset" value="Clear" id="remote-test"/>
+      </form>
+      <input type="button" value="Download" id="remote-download"/>
+      <input type="button" value="Upload" id="remote-upload"/>
+      <div class="data-container" id="remote-team">Empty Remote Team Data</div>
+    </div>
+    <div class="configure-content content-div">
+      <input type="checkbox" id="setting1" checked>
+      <label for="setting1">sync prefs</label>
+    </div>
+  </div>
+  <script src="webdav.js"></script>
+  <script src="psync.js"></script>
+</body>
+
+</html>

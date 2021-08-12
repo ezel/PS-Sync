@@ -1,0 +1,24 @@
+html, body {
+    width: 200px;
+  }
+
+  form {
+    width: 100%;
+  }
+
+  div.content-div {
+    /* border: solid; */
+    margin: 3px 0px;
+  }
+
+  div.data-container {
+    margin-top: 3px;
+    border-style: double;
+  }
+
+  div#local-team {
+    border-color: blue;
+  }
+  div#remote-team {
+    border-color: red;
+  }
