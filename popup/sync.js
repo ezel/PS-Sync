@@ -87,15 +87,13 @@ document.getElementById("remote-upload").addEventListener("click", async (e) => 
 
 // local reload button
 function sendMessageToTabs(tabs) {
-    for (let tab of tabs) {
-      browser.tabs.sendMessage(
-        tab.id,
-        {greeting: "Hi from background script"}
-      ).then(response => {
-        console.log("Message from the content script:");
-        console.log(response.response);
-      }).catch(onError);
-    }
+    browser.tabs.sendMessage(
+    tabs[0].id,
+    {command: "reload"}
+    ).then(response => {
+    console.log("Message from the content script:");
+    alert(response.response);
+    }).catch((error)=>{console.error(`Error: ${error}`);});
 }
 
 document.getElementById("local-load").addEventListener("click", async (e) => {

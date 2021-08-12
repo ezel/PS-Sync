@@ -18,8 +18,11 @@
     },
     "content_scripts": [
         {
-          "matches": ["*://*/*"],
-          "js": ["ps-sync.js"]
+          "matches": [
+              "https://play.pokemonshowdown.com/*",
+              "file://*/*"
+        ],
+          "js": ["content_scripts/ps-sync.js"]
         }
-    ]
+      ]
 }
