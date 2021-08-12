@@ -38,6 +38,13 @@ function webdav_client(handle_client) {
     });
 }
 
+function get_team_info(teams) {
+    let info = {};
+    info['num_teams'] = (teams.match(/\n/g) || [] ).length+1;
+    info['num_pms'] = (teams.match(/]/g) || [] ).length;
+    return info;
+}
+
 // button listener part
 // test button
 document.getElementById("remote-test").addEventListener("click", async (e) => {
@@ -70,7 +77,11 @@ document.getElementById("remote-download").addEventListener("click", (e) => {
     webdav_client(async (client) => {
         if (await client.exists(remote_filename['teams']) === true) {
             var rcontent = await client.getFileContents(remote_filename['teams'], { format: "text" });
-            remote_div.innerText = rcontent;
+            let remote_team_info = get_team_info(rcontent);
+            remote_div.data = rcontent;
+            remote_div.innerText = 
+                `${remote_team_info['num_teams']} Team,
+                ${remote_team_info['num_pms']} Pokemon.`;
         } else {
             remote_div.innerText = 'no file on server';
         }
@@ -80,9 +91,21 @@ document.getElementById("remote-download").addEventListener("click", (e) => {
 // remote upload button
 document.getElementById("remote-upload").addEventListener("click", async (e) => {
     webdav_client(async (client) => {
-        let str = 'some data'
+        let str = remote_div.data;
         await client.putFileContents(remote_filename['teams'], str);
     });
+});
+
+// exchange button
+document.getElementById("local-remote-exchange").addEventListener("click", (e) => {
+    let tmp = {
+        text : local_div.innerText,
+        data : local_div.data
+    }
+    local_div.innerText = remote_div.innerText;
+    local_div.data = remote_div.data;
+    remote_div.innerText = tmp['text'];
+    remote_div.data = tmp['data'];
 });
 
 // local reload button
@@ -91,12 +114,15 @@ function sendMessageToTabs(tabs) {
     tabs[0].id,
     {command: "reload"}
     ).then(response => {
-    console.log("Message from the content script:");
-    alert(response.response);
+    let local_team_info = get_team_info(response.data);
+    local_div.data = response.data;
+    local_div.innerText = 
+        `${local_team_info['num_teams']} Team,
+        ${local_team_info['num_pms']} Pokemon.`;
     }).catch((error)=>{console.error(`Error: ${error}`);});
 }
 
-document.getElementById("local-load").addEventListener("click", async (e) => {
+document.getElementById("local-load").addEventListener("click", (e) => {
     browser.tabs.query({
         currentWindow: true,
         active: true
@@ -105,6 +131,17 @@ document.getElementById("local-load").addEventListener("click", async (e) => {
 });
 
 // local update button
-document.getElementById("local-update").addEventListener("click", async (e) => {
-
+document.getElementById("local-update").addEventListener("click", (e) => {
+    browser.tabs.query({
+        currentWindow: true,
+        active: true
+      }).then((tabs)=>{
+        browser.tabs.sendMessage(tabs[0].id,
+            {
+                command: "update",
+                data: local_div.data
+            }
+            );
+      })
+      .catch((error)=>{console.error(`Error: ${error}`);});
 });

@@ -8,20 +8,20 @@
       return;
     }
     window.hasRun = true;
-
     
     function add_buttons() {
     }
-    console.log(browser);
     
     browser.runtime.onMessage.addListener(message => {
         console.log("Message from the background script:");
         console.log(message);
         if (message.command === 'reload') {
-            //let data = window.localStorage.showdown_teams
-            return Promise.resolve({data: window.localStorage.showdown_teams});
+            let data = window.localStorage.getItem('showdown_teams');
+            return Promise.resolve({data: data});
         } else if (message.command === 'update') {
-            message.data
+            let new_team = message.data;
+            window.wrappedJSObject.Storage.loadPackedTeams(new_team);
+            window.localStorage.setItem('showdown_teams', new_team);
         }
       });
 })();
