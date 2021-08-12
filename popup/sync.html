@@ -19,20 +19,21 @@
         <input type="url" id="webdav-url" placeholder="https://dav."/>
         <input type="text" id="webdav-username" placeholder="username" />
         <input type="password" id="webdav-password" placeholder="password" />
+        <br/>
         <input type="button" value="Test" id="remote-test"/>
-        <input type="reset" value="Clear" id="remote-test"/>
+        <input type="reset" value="Clear" id="remote-clear"/>
       </form>
       <input type="button" value="Download" id="remote-download"/>
       <input type="button" value="Upload" id="remote-upload"/>
       <div class="data-container" id="remote-team">Empty Remote Team Data</div>
     </div>
     <div class="configure-content content-div">
-      <input type="checkbox" id="setting1" checked>
+      <input type="checkbox" id="setting1">
       <label for="setting1">sync prefs</label>
     </div>
   </div>
   <script src="webdav.js"></script>
-  <script src="psync.js"></script>
+  <script src="sync.js"></script>
 </body>
 
 </html>

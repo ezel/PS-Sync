@@ -15,5 +15,11 @@
         "default_icon": "icons/s1.png",
         "default_title": "PS Sync",
         "default_popup": "popup/sync.html"
+    },
+    "content_scripts": [
+        {
+          "matches": ["*://*/*"],
+          "js": ["ps-sync.js"]
         }
+    ]
 }
