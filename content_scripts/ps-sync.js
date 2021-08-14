@@ -9,9 +9,65 @@
     }
     window.hasRun = true;
     
-    function add_buttons() {
+    function init_buttons() {
+      // backup button
+      let btn_backup = document.createElement('input');
+      btn_backup.type = "button";
+      btn_backup.value = "Backup";
+
+      // restore button
+      let btn_restore = document.createElement('input');
+      btn_restore.type = "button";
+      btn_restore.value = "Restore";
+
+      // append in pane
+      div_psync.appendChild(btn_backup);
+      div_psync.appendChild(btn_restore);
+
+      //check pane
+      let teampane = document.getElementsByClassName('teampane');
+      if (teampane.length > 0) {
+        teampane[0].appendChild(div_psync);
+      } else {
+        let main_teams = document.getElementsByClassName('mainmenu2');
+        for (let ele of main_teams) {
+          ele.addEventListener("mouseup", hook_mainteam_buttons);
+        }
+      }
     }
     
+    function hook_mainteam_buttons(e) {
+      function get_close_team_btn() {
+        let btns = document.getElementsByName('closeRoom');
+        for (let btn of btns) {
+          if (btn.value="teambuilder")
+            return btn;
+        }
+        return null;
+      }
+      setTimeout(()=>{
+        let teampane = document.getElementsByClassName('teampane');
+        if (teampane.length > 0) {
+          teampane[0].appendChild(div_psync);
+
+          // hook close btn
+          let close_btn = get_close_team_btn();
+          if (close_btn) {
+            close_btn.addEventListener('click', ()=>{
+              let main_teams = document.getElementsByClassName('mainmenu2');
+              for (let ele of main_teams) {
+                ele.addEventListener("mouseup", hook_mainteam_buttons);
+              }
+            });
+          }
+        }
+      },200);
+      e.target.removeEventListener("mouseup", hook_mainteam_buttons);
+    }
+    
+    init_buttons();
+    
+
     browser.runtime.onMessage.addListener(message => {
         console.log("Message from the background script:");
         console.log(message);
