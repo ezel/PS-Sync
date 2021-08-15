@@ -7,8 +7,14 @@
     "icons": {
         "48": "icons/s1.png"
     },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "psync@addon.com"
+        }
+    },
     "permissions": [
         "storage",
+        "notifications",
         "https://*/*"
     ],
     "browser_action": {

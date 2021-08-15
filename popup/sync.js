@@ -12,19 +12,76 @@ const createClient = window.WebDAV.createClient;
             document.getElementById("webdav-url").value = webdav_conf['url'] || '';
             document.getElementById("webdav-username").value = webdav_conf['username'] || '';
             document.getElementById("webdav-password").value = webdav_conf['password'] || '';
+            update_synctime();
         }
     });
+    
+    // display sync buttons
+    browser.tabs.query({
+        currentWindow: true,
+        active: true
+        }).then(tabs=>{
+            console.debug('display sync button');
+            // only ps show the sync buttons
+            if (tabs && tabs[0] && tabs[0].url && tabs[0].url.match(/play.pokemonshowdown.com/)) {
+                document.getElementById("sync-conetent").classList.remove('hidden');
+            }
+    });
+
 })();
 
 const remote_filename = {
     "teams": "/team.txt",
     "prefs": "/preference.txt"
 }
-const local_div= document.getElementById("local-team");
-const remote_div= document.getElementById("remote-team");
+const sync_div = document.getElementById("synctime");
 // end init part
 
 // helper functions
+function onErrorItem(error) {
+    alert(`Error: ${error}`);
+}
+
+function update_synctime(force_remote=false) {
+    function fetch_from_remote() {
+        console.debug('fetch from remote');
+        webdav_client(async (client) => {
+            let synctime;
+            try {
+                let file_info = await client.getDirectoryContents(remote_filename['teams']);
+                // ensure file exist
+                synctime = file_info[0]['lastmod'];
+            }
+            catch {
+                synctime = 'no backup file on webdav!';
+            }
+            browser.storage.local.set({"synctime": synctime})
+                .then(update_synctime);
+        });
+    }
+    
+    console.log('pull sync time');
+    if (force_remote===true) {
+        fetch_from_remote();
+    } else {
+        browser.storage.local.get("synctime")
+        .then(
+            // has synctime in storage
+            (item)=>{
+                let synctime= item['synctime'];
+                if (synctime) {
+                    document.getElementById("synctime").innerText = synctime;
+                } else {
+                    // no local storage found
+                    // fetch synctime from remote
+                    fetch_from_remote();
+                }
+            },
+            onErrorItem
+        );
+    }
+}
+
 function webdav_client(handle_client) {
     browser.storage.local.get("webdav_conf").then((item)=>{
         let webdav_conf = item['webdav_conf'];
@@ -69,79 +126,73 @@ document.getElementById("remote-test").addEventListener("click", async (e) => {
 
 // clear button
 document.getElementById("remote-clear").addEventListener("click", (e) => {
-    browser.storage.local.clear();
+    if (confirm('remove all extension storage?') === true) {
+        browser.storage.local.clear();
+    } else {
+        e.preventDefault();
+    }
 });
 
-// remote download button
-document.getElementById("remote-download").addEventListener("click", (e) => {
+// sync backup button
+document.getElementById("sync-download").addEventListener("click", (e) => {
+    // query tab to get localstorage
+    browser.tabs.query({
+        currentWindow: true,
+        active: true
+    }).then(tabs=>{
+        browser.tabs.sendMessage(
+            tabs[0].id,
+            {command: "reload"}
+        ).then(response => {
+            let local_team_info = get_team_info(response.data);
+            
+            // upload to remote webdav
+            webdav_client(async (client) => {
+                let str = response.data;
+                await client.putFileContents(remote_filename['teams'], str);
+                update_synctime(true);
+                browser.notifications.create("PokemonShowdown Sync", {
+                    "type": "basic",
+                    "title": "Backup Team",
+                    "message": `${local_team_info['num_teams']} Team,\nwith ${local_team_info['num_pms']} Pokemon.`
+                });
+            });
+            }).catch((error)=>{console.error(`Error: ${error}`);});
+    }).catch((error)=>{console.error(`Error: ${error}`);});
+});
+
+// sync restore button
+document.getElementById("sync-upload").addEventListener("click", (e) => {
+    // get remote webdav file info
     webdav_client(async (client) => {
         if (await client.exists(remote_filename['teams']) === true) {
-            var rcontent = await client.getFileContents(remote_filename['teams'], { format: "text" });
-            let remote_team_info = get_team_info(rcontent);
-            remote_div.data = rcontent;
-            remote_div.innerText = 
-                `${remote_team_info['num_teams']} Team,
-                ${remote_team_info['num_pms']} Pokemon.`;
+            // download data from remote webdav
+            var remote_content = await client.getFileContents(remote_filename['teams'], { format: "text" });
+            let remote_team_info = get_team_info(remote_content);
+            
+            if ((document.getElementById('setting1').checked && confirm('restore from remote?')=== true)
+                || (document.getElementById('setting1').checked === false)) {
+                
+                // save data to PS
+                browser.tabs.query({
+                    currentWindow: true,
+                    active: true
+                }).then((tabs)=>{
+                    browser.tabs.sendMessage(tabs[0].id,
+                        {
+                            command: "update",
+                            data: remote_content
+                        });
+
+                    browser.notifications.create("PokemonShowdown Sync", {
+                        "type": "basic",
+                        "title": "Restore Team",
+                        "message": `${remote_team_info['num_teams']} Team,\n${remote_team_info['num_pms']} Pokemon.`
+                    });
+                }).catch((error)=>{console.error(`Error: ${error}`);});
+            }
         } else {
-            remote_div.innerText = 'no file on server';
+            sync_div.innerText = 'no backup file on webdav!';
         }
     });
-});
-
-// remote upload button
-document.getElementById("remote-upload").addEventListener("click", async (e) => {
-    webdav_client(async (client) => {
-        let str = remote_div.data;
-        await client.putFileContents(remote_filename['teams'], str);
-    });
-});
-
-// exchange button
-document.getElementById("local-remote-exchange").addEventListener("click", (e) => {
-    let tmp = {
-        text : local_div.innerText,
-        data : local_div.data
-    }
-    local_div.innerText = remote_div.innerText;
-    local_div.data = remote_div.data;
-    remote_div.innerText = tmp['text'];
-    remote_div.data = tmp['data'];
-});
-
-// local reload button
-function sendMessageToTabs(tabs) {
-    browser.tabs.sendMessage(
-    tabs[0].id,
-    {command: "reload"}
-    ).then(response => {
-    let local_team_info = get_team_info(response.data);
-    local_div.data = response.data;
-    local_div.innerText = 
-        `${local_team_info['num_teams']} Team,
-        ${local_team_info['num_pms']} Pokemon.`;
-    }).catch((error)=>{console.error(`Error: ${error}`);});
-}
-
-document.getElementById("local-load").addEventListener("click", (e) => {
-    browser.tabs.query({
-        currentWindow: true,
-        active: true
-      }).then(sendMessageToTabs)
-      .catch((error)=>{console.error(`Error: ${error}`);});
-});
-
-// local update button
-document.getElementById("local-update").addEventListener("click", (e) => {
-    browser.tabs.query({
-        currentWindow: true,
-        active: true
-      }).then((tabs)=>{
-        browser.tabs.sendMessage(tabs[0].id,
-            {
-                command: "update",
-                data: local_div.data
-            }
-            );
-      })
-      .catch((error)=>{console.error(`Error: ${error}`);});
 });

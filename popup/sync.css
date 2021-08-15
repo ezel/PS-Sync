@@ -1,9 +1,9 @@
 html, body {
-    width: 200px;
+    width: 230px;
   }
 
-  form {
-    width: 100%;
+  form input:nth-child(-n+3){
+    width: 220px;
   }
 
   div.content-div {
@@ -16,9 +16,6 @@ html, body {
     border-style: double;
   }
 
-  div#local-team {
-    border-color: blue;
-  }
-  div#remote-team {
-    border-color: red;
+  div.hidden {
+    display: none;
   }
