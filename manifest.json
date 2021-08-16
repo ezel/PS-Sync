@@ -2,7 +2,7 @@
     "description": "sync team of Play Pokemon Showdown ",
     "manifest_version": 2,
     "name": "PokemonShowdown Sync",
-    "version": "0.2.2",
+    "version": "0.3.1",
     "homepage_url": "https://github.com/ezel/PS-Sync",
     "icons": {
         "48": "icons/s1.png"
