@@ -22,7 +22,7 @@ const createClient = window.WebDAV.createClient;
             // only ps show the sync buttons
             if (tabs && tabs[0] && tabs[0].url && tabs[0].url.match(/play.pokemonshowdown.com/)) {
                 if (typeof browser.runtime.getBrowserInfo === "undefined") // not firefox
-                    { browser.tabs.executeScript({file: "/popup/browser-polyfill.js"}); }
+                    { browser.tabs.executeScript({file: "/popup/browser-polyfill.min.js"}); }
                 browser.tabs.executeScript({file: "/content_scripts/ps-sync.js"})
                 .then((e)=>{
                     document.getElementById("sync-conetent").classList.remove('hidden');
