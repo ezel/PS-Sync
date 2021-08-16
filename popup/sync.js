@@ -1,6 +1,4 @@
 // init part
-console.log(window);
-console.log(window.WebDAV);
 const AuthType = window.WebDAV.AuthType;
 const createClient = window.WebDAV.createClient;
 
@@ -20,12 +18,16 @@ const createClient = window.WebDAV.createClient;
         currentWindow: true,
         active: true
         }).then(tabs=>{
-            console.debug('display sync button');
+            //console.debug('display sync button');
             // only ps show the sync buttons
             if (tabs && tabs[0] && tabs[0].url && tabs[0].url.match(/play.pokemonshowdown.com/)) {
-                document.getElementById("sync-conetent").classList.remove('hidden');
-                browser.tabs.executeScript({file: "popup/browser-polyfill.js"});
-                browser.tabs.executeScript({file: "content_scripts/ps-sync.js"});
+                if (typeof browser.runtime.getBrowserInfo === "undefined") // not firefox
+                    { browser.tabs.executeScript({file: "/popup/browser-polyfill.js"}); }
+                browser.tabs.executeScript({file: "/content_scripts/ps-sync.js"})
+                .then((e)=>{
+                    document.getElementById("sync-conetent").classList.remove('hidden');
+                })
+                .catch(onErrorItem);
             }
     });
 
@@ -39,13 +41,14 @@ const sync_div = document.getElementById("synctime");
 // end init part
 
 // helper functions
-function onErrorItem(error) {
-    alert(`Error: ${error}`);
+function onErrorItem(error) { // ensure correct
+    alert(`Catch Error: ${error}`);
+    console.error(error);
 }
 
 function update_synctime(force_remote=false) {
     function fetch_from_remote() {
-        console.debug('fetch from remote');
+        //console.debug('fetch from remote');
         webdav_client(async (client) => {
             let synctime;
             try {
@@ -61,7 +64,7 @@ function update_synctime(force_remote=false) {
         });
     }
     
-    console.log('pull sync time');
+    //console.log('pull sync time');
     if (force_remote===true) {
         fetch_from_remote();
     } else {
@@ -161,7 +164,7 @@ document.getElementById("sync-download").addEventListener("click", (e) => {
                 });
             });
             }).catch((error)=>{console.error(`Error: ${error}`);});
-    }).catch((error)=>{console.error(`Error: ${error}`);});
+    }).catch((error)=>{console.error(`Error@sync-download: ${error}`);});
 });
 
 // sync restore button
@@ -192,7 +195,7 @@ document.getElementById("sync-upload").addEventListener("click", (e) => {
                         "title": "Restoring team Completed!",
                         "message": `${remote_team_info['num_teams']} team,\n${remote_team_info['num_pms']} pokemon.`
                     });
-                }).catch((error)=>{console.error(`Error: ${error}`);});
+                }).catch((error)=>{console.error(`Error@sync-upload: ${error}`);});
             }
         } else {
             sync_div.innerText = 'no backup file on webdav!';
