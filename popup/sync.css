@@ -1,7 +1,10 @@
 html, body {
-    width: 230px;
+    width: 250px;
   }
 
+  form input {
+    margin: 1px 1px;
+  }
   form input:nth-child(-n+3){
     width: 220px;
   }
@@ -15,7 +18,11 @@ html, body {
     margin-top: 3px;
     border-style: double;
   }
-
+  div#synctime {
+    width:230px;
+    font-size:small;
+    
+  }
   div.hidden {
     display: none;
   }

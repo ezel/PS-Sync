@@ -21,14 +21,5 @@
         "default_icon": "icons/s1.png",
         "default_title": "PS Sync",
         "default_popup": "popup/sync.html"
-    },
-    "content_scripts": [
-        {
-          "matches": [
-              "https://play.pokemonshowdown.com/*",
-              "file://*/*"
-        ],
-          "js": ["content_scripts/ps-sync.js"]
-        }
-      ]
+    }
 }

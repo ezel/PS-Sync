@@ -1,11 +1,10 @@
 // init part
+console.log(window);
+console.log(window.WebDAV);
 const AuthType = window.WebDAV.AuthType;
 const createClient = window.WebDAV.createClient;
 
 (function init() {
-    //console.debug("all config:")
-    //let all_config = browser.storage.local.get().then((item)=>{console.debug(item);});
-
     browser.storage.local.get("webdav_conf").then((item)=>{
         let webdav_conf = item['webdav_conf'];
         if (webdav_conf) {
@@ -25,6 +24,8 @@ const createClient = window.WebDAV.createClient;
             // only ps show the sync buttons
             if (tabs && tabs[0] && tabs[0].url && tabs[0].url.match(/play.pokemonshowdown.com/)) {
                 document.getElementById("sync-conetent").classList.remove('hidden');
+                browser.tabs.executeScript({file: "popup/browser-polyfill.js"});
+                browser.tabs.executeScript({file: "content_scripts/ps-sync.js"});
             }
     });
 
@@ -151,10 +152,12 @@ document.getElementById("sync-download").addEventListener("click", (e) => {
                 let str = response.data;
                 await client.putFileContents(remote_filename['teams'], str);
                 update_synctime(true);
+                let noti_msg = `${local_team_info['num_teams']} team,\nwith ${local_team_info['num_pms']} pokemon.`;
                 browser.notifications.create("PokemonShowdown Sync", {
                     "type": "basic",
-                    "title": "Backup Team",
-                    "message": `${local_team_info['num_teams']} Team,\nwith ${local_team_info['num_pms']} Pokemon.`
+                    "iconUrl": "../icons/s1.png",
+                    "title": "Backuping team Completed!",
+                    "message": noti_msg
                 });
             });
             }).catch((error)=>{console.error(`Error: ${error}`);});
@@ -183,11 +186,11 @@ document.getElementById("sync-upload").addEventListener("click", (e) => {
                             command: "update",
                             data: remote_content
                         });
-
                     browser.notifications.create("PokemonShowdown Sync", {
                         "type": "basic",
-                        "title": "Restore Team",
-                        "message": `${remote_team_info['num_teams']} Team,\n${remote_team_info['num_pms']} Pokemon.`
+                        "iconUrl": "../icons/s1.png",
+                        "title": "Restoring team Completed!",
+                        "message": `${remote_team_info['num_teams']} team,\n${remote_team_info['num_pms']} pokemon.`
                     });
                 }).catch((error)=>{console.error(`Error: ${error}`);});
             }
