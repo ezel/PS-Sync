@@ -20,16 +20,15 @@ const browser = chrome;
         currentWindow: true,
         active: true
         }).then(tabs=>{
-            //console.debug('display sync button');
-            // only ps show the sync buttons
+            // only show the sync buttons on PS site
             if (tabs && tabs[0] && tabs[0].url && tabs[0].url.match(/play.pokemonshowdown.com/)) {
-                if (typeof browser.runtime.getBrowserInfo === "undefined") // not firefox
-                    { browser.tabs.executeScript({file: "/popup/browser-polyfill.min.js"}); }
-                browser.tabs.executeScript({file: "/content_scripts/ps-sync.js"})
-                .then((e)=>{
+                //if (typeof browser.runtime.getBrowserInfo === "undefined") // not firefox
+                    //{ browser.tabs.executeScript({file: "/popup/browser-polyfill.min.js"}); }
+                //browser.tabs.executeScript({file: "/content_scripts/ps-sync.js"})
+                //.then((e)=>{
                     document.getElementById("sync-conetent").classList.remove('hidden');
-                })
-                .catch(onErrorItem);
+                //})
+                //.catch(onErrorItem);
             }
     });
 
@@ -43,7 +42,7 @@ const sync_div = document.getElementById("synctime");
 // end init part
 
 // helper functions
-function onErrorItem(error) { // ensure correct
+function onErrorItem(error) { // assert correct
     alert(`Catch Error: ${error}`);
     console.error(error);
 }
@@ -139,7 +138,7 @@ document.getElementById("remote-clear").addEventListener("click", (e) => {
     }
 });
 
-// sync backup button
+// sync backup button: upload to remote
 document.getElementById("sync-download").addEventListener("click", (e) => {
     // query tab to get localstorage
     browser.tabs.query({
@@ -169,7 +168,7 @@ document.getElementById("sync-download").addEventListener("click", (e) => {
     }).catch((error)=>{console.error(`Error@sync-download: ${error}`);});
 });
 
-// sync restore button
+// sync restore button: download to local
 document.getElementById("sync-upload").addEventListener("click", (e) => {
     // get remote webdav file info
     webdav_client(async (client) => {
