@@ -2,6 +2,8 @@
 const AuthType = window.WebDAV.AuthType;
 const createClient = window.WebDAV.createClient;
 
+const browser = chrome;
+
 (function init() {
     browser.storage.local.get("webdav_conf").then((item)=>{
         let webdav_conf = item['webdav_conf'];

@@ -1,23 +1,26 @@
 {
     "description": "sync team of Play Pokemon Showdown ",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "PokemonShowdown Sync",
     "version": "0.3.1",
     "homepage_url": "https://github.com/ezel/PS-Sync",
     "icons": {
         "48": "icons/s1.png"
     },
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "{aab64422-c2a5-4b32-892b-202ee48fd531}"
-        }
-    },
     "permissions": [
         "storage",
-        "notifications",
-        "https://*/*"
+        "notifications"
     ],
-    "browser_action": {
+    "content_scripts" :[
+        {
+        "matches": ["*://play.pokemonshowdown.com/"],
+        "js": ["content_scripts/ps-sync.js"]
+        }
+    ],
+    "host_permissions": [
+        "https://*/"
+    ],
+    "action": {
         "default_icon": "icons/s1.png",
         "default_title": "PS Sync",
         "default_popup": "popup/sync.html"
