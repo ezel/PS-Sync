@@ -23,7 +23,7 @@ html, body {
     font-size:small;
     
   }
-  div.hidden {
+  .hidden {
     display: none;
   }
 
@@ -33,15 +33,16 @@ summary.helper-text {
   margin-bottom: 10px;
 }
 
-input#arv-p {width: 60px; padding-left:2px;}
-input#arv-all {width: 110px;}
+td#arv-btn-cell input {
+  width: 170px;
+}
 
 ul#arv-teams {
   padding-left: 4px;
 }
 
-ul#arv-teams input.arv-un-btn { width: 60px;}
-ul#arv-teams input.arv-rm-btn { width: 48px;}
+ul#arv-teams input.arv-un-btn { width: 70px; margin:0px 8px;}
+ul#arv-teams input.arv-rm-btn { width: 70px;}
 ul#arv-teams input.arv-un-btn,
 ul#arv-teams input.arv-rm-btn {
   font-size: 12px;

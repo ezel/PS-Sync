@@ -41,16 +41,25 @@
       <div class="archive-remote-content contend-div">
         <details>
           <summary class="helper-text">Why archive?</summary>
-          <p>1. May be useful for meta change.<br>
-            2. No data corruption (store in different files).<br>
-            3. Make team builder cleaner.</p>
+          <p>
+            1. May be useful for meta change.<br />
+            2. No data corruption (store in different files).<br />
+            3. Make team builder cleaner.
+          </p>
         </details>
         <form>
-          <div>Archive:
-            <input type="button" value="All From Backup" id="arv-all" />
-            <input type="button" value="Selected" id="arv-p" />
+          <div class="content-div">
+            <table>
+              <tr>
+                <th>Archive:</th>
+                <td id="arv-btn-cell">
+                  <input type="button" value="Merge From Backup" id="arv-cp" /><br>
+                  <input class="hidden" type="button" value="Append Selected" id="arv-p" />
+                </td>
+              </tr>
+            </table>
           </div>
-          <input type="button" value="Pull archived Teams" id="arv-download" />
+      <input type="button" value="Pull archived Teams" id="arv-download" />
           <div class="content-div">
             <ul id="arv-teams">
               <li>no auto load</li>
