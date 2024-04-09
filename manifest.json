@@ -13,8 +13,14 @@
     ],
     "content_scripts" :[
         {
-        "matches": ["*://play.pokemonshowdown.com/"],
-        "js": ["content_scripts/ps-sync.js"]
+        "matches": ["*://play.pokemonshowdown.com/*"],
+        "js": ["content_scripts/ps_content.js"]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["content_scripts/refreshTeam.js"],
+            "matches": ["https://play.pokemonshowdown.com/*","http://play.pokemonshowdown.com/*"]
         }
     ],
     "host_permissions": [
