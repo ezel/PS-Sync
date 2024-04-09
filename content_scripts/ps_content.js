@@ -25,13 +25,16 @@ function injectAndRemoveScript(file_path, tag) {
   const browser = chrome;
 
   // message handler for popup extension
-  browser.runtime.onMessage.addListener((message) => {
+  browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("====> Message from the background script:");
     console.log(message);
 
     if (message.command === "reload") {
       let data = window.localStorage.getItem("showdown_teams");
-      return Promise.resolve({ data: data });
+      console.log(data);
+      //return Promise.resolve({ data: data });
+      sendResponse({data: data});
+      return true;
     } else if (message.command === "update") {
       let new_team = message.data;
       // update data in localStorage
