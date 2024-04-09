@@ -1,9 +1,8 @@
 window.Storage.loadTeams();
-let room = window.room;
-if (room.selectFolder) {
-    room.curFolderKeep ="";
-    room.curFolder ="";
-    room.updateFolderList();
-    room.updateTeamList(true);
-    room.update();  
+if (window.room.selectFolder) {
+    window.room.curFolderKeep ="";
+    window.room.curFolder ="";
+    window.room.updateFolderList();
+    window.room.updateTeamList(true);
+    window.room.update();  
 }

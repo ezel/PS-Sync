@@ -23,7 +23,8 @@ function injectAndRemoveScript(file_path, tag) {
   window.hasRun = true;
 
   const browser = chrome;
-  // do the team refresh (DOM)
+
+  // message handler for popup extension
   browser.runtime.onMessage.addListener((message) => {
     console.log("====> Message from the background script:");
     console.log(message);
@@ -36,6 +37,16 @@ function injectAndRemoveScript(file_path, tag) {
       // update data in localStorage
 
       window.localStorage.setItem("showdown_teams", new_team);
+      injectAndRemoveScript(
+        chrome.runtime.getURL("content_scripts/refreshTeam.js"),
+        "body"
+      );
+    } else if (message.command === "unarchive") {
+      let append_team = message.data;
+      window.localStorage.setItem(
+        "showdown_teams",
+        window.localStorage.getItem("showdown_teams") + "\n" + append_team
+      );
       injectAndRemoveScript(
         chrome.runtime.getURL("content_scripts/refreshTeam.js"),
         "body"
