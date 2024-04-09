@@ -1,5 +1,5 @@
 html, body {
-    width: 250px;
+    width: 260px;
   }
 
   form input {
@@ -26,3 +26,39 @@ html, body {
   div.hidden {
     display: none;
   }
+
+summary.helper-text {
+  text-decoration: underline;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+input#arv-p {width: 60px; padding-left:2px;}
+input#arv-all {width: 110px;}
+
+ul#arv-teams {
+  padding-left: 4px;
+}
+
+ul#arv-teams input.arv-un-btn { width: 60px;}
+ul#arv-teams input.arv-rm-btn { width: 48px;}
+ul#arv-teams input.arv-un-btn,
+ul#arv-teams input.arv-rm-btn {
+  font-size: 12px;
+  padding: 0px;
+}
+
+ul#arv-teams li span.arv-team-format {
+  color: red;
+  font-size: 10px;
+}
+ul#arv-teams li span.arv-team-name {
+  font-weight: bold;
+}
+
+p.arv-team-preview img{
+  display: inline-block;
+  width: 40px;
+  height: 30px;
+}
+

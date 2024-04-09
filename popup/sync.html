@@ -2,35 +2,65 @@
 
 <html>
   <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="sync.css"/>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="sync.css" />
   </head>
 
-<body>
-  <div id="outter-wrapper">
+  <body>
+    <div id="outter-wrapper">
       <div class="data-container" id="synctime"></div>
       <div class="sync-conetent content-div hidden" id="sync-conetent">
-      <input type="button" value="Backup/Upload" id="sync-download"/>
-      <input type="button" value="Restore/Download" id="sync-upload"/>
-    </div>
+        <input type="button" value="Backup" id="sync-download" />
+        <input type="button" value="Restore" id="sync-upload" />
+      </div>
 
-    <div class="remote-content content-div">
-      <form>
-        <input type="url" id="webdav-url" placeholder="https://" value="https://dav.jianguoyun.com/dav/ps/"/>
-        <input type="text" id="webdav-username" placeholder="username" />
-        <input type="password" id="webdav-password" placeholder="password" />
-        <br/>
-        <input type="button" value="Test" id="remote-test"/>
-        <input type="reset" value="Clear" id="remote-clear"/>
-      </form>
+      <div class="remote-content content-div">
+        <form>
+          <input
+            type="url"
+            id="webdav-url"
+            placeholder="https://"
+            value="https://dav.jianguoyun.com/dav/ps/"
+          />
+          <input type="text" id="webdav-username" placeholder="username" />
+          <input type="password" id="webdav-password" placeholder="password" />
+          <br />
+          <input type="button" value="Test" id="remote-test" />
+          <input type="reset" value="Clear" id="remote-clear" />
+        </form>
+      </div>
+      <div class="configure-content content-div">
+        <input type="checkbox" id="setting1" checked />
+        <label for="setting1">Restore need confirm</label><br />
+        <input type="checkbox" id="setting2" checked />
+        <label for="setting2">Enable Team Beautify</label><br />
+        <input type="checkbox" id="setting3" checked />
+        <label for="setting3">Enable Switch Beautify</label><br />
+      </div>
+      <hr />
+      <div class="archive-remote-content contend-div">
+        <details>
+          <summary class="helper-text">Why archive?</summary>
+          <p>1. May be useful for meta change.<br>
+            2. No data corruption (store in different files).<br>
+            3. Make team builder cleaner.</p>
+        </details>
+        <form>
+          <div>Archive:
+            <input type="button" value="All From Backup" id="arv-all" />
+            <input type="button" value="Selected" id="arv-p" />
+          </div>
+          <input type="button" value="Pull archived Teams" id="arv-download" />
+          <div class="content-div">
+            <ul id="arv-teams">
+              <li>no auto load</li>
+            </ul>
+          </div>
+        </form>
+      </div>
     </div>
-    <div class="configure-content content-div">
-      <input type="checkbox" id="setting1" checked>
-      <label for="setting1">Restore need confirm</label>
-    </div>
-  </div>
     <script src="webdav.js"></script>
     <script src="sync.js"></script>
-</body>
-
+    <script src="archive.js"></script>
+  </body>
 </html>
