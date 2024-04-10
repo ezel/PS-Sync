@@ -39,3 +39,13 @@ Similar to the sync part
 
 ## Built With
 * [WebDav](https://github.com/perry-mitchell/webdav-client)
+``` sh
+npm run build:web
+```
+
+``` javascript
+ output: {
+    environment: { module: false },
+    library: { type: "window", name: 'WebDAV' }
+}
+```
