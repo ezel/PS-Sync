@@ -1,31 +1,42 @@
-html, body {
-    width: 260px;
-  }
+html,
+body {
+  width: 260px;
+}
 
-  form input {
-    margin: 1px 1px;
-  }
-  form input:nth-child(-n+3){
-    width: 220px;
-  }
+form input {
+  margin: 1px 1px;
+}
+form input:nth-child(-n + 3) {
+  width: 220px;
+}
 
-  div.content-div {
-    /* border: solid; */
-    margin: 3px 0px;
-  }
+div.content-div {
+  /* border: solid; */
+  margin: 3px 0px;
+}
 
-  div.data-container {
-    margin-top: 3px;
-    border-style: double;
-  }
-  div#synctime {
-    width:230px;
-    font-size:small;
-    
-  }
-  .hidden {
-    display: none;
-  }
+div.container-div {
+  border-top: dashed 2px darkblue;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  margin-left: -8px;
+  padding-left: 8px;
+}
+span.container-title {
+  font-size: 12px;
+}
+
+div.data-container {
+  margin-top: 3px;
+  border-style: double;
+}
+div#synctime {
+  width: 230px;
+  font-size: small;
+}
+.hidden {
+  display: none;
+}
 
 summary.helper-text {
   text-decoration: underline;
@@ -41,8 +52,13 @@ ul#arv-teams {
   padding-left: 4px;
 }
 
-ul#arv-teams input.arv-un-btn { width: 70px; margin:0px 8px;}
-ul#arv-teams input.arv-rm-btn { width: 70px;}
+ul#arv-teams input.arv-un-btn {
+  width: 70px;
+  margin: 0px 8px;
+}
+ul#arv-teams input.arv-rm-btn {
+  width: 70px;
+}
 ul#arv-teams input.arv-un-btn,
 ul#arv-teams input.arv-rm-btn {
   font-size: 12px;
@@ -57,9 +73,8 @@ ul#arv-teams li span.arv-team-name {
   font-weight: bold;
 }
 
-p.arv-team-preview img{
+p.arv-team-preview img {
   display: inline-block;
   width: 40px;
   height: 30px;
 }
-

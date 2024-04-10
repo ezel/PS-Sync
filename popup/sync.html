@@ -8,13 +8,8 @@
 
   <body>
     <div id="outter-wrapper">
-      <div class="data-container" id="synctime"></div>
-      <div class="sync-conetent content-div hidden" id="sync-conetent">
-        <input type="button" value="Backup" id="sync-download" />
-        <input type="button" value="Restore" id="sync-upload" />
-      </div>
-
-      <div class="remote-content content-div">
+      <div class="remote-content container-div content-div" id="password-form">
+        <span class="container-title">WebDav info:</span>
         <form>
           <input
             type="url"
@@ -29,38 +24,60 @@
           <input type="reset" value="Clear" id="remote-clear" />
         </form>
       </div>
-      <div class="configure-content content-div">
-        <input type="checkbox" id="setting1" checked />
-        <label for="setting1">Restore need confirm</label><br />
+      <div class="container-div contend-div">
+        <span class="container-title">Sync info:</span>
+        <div class="data-container" id="synctime"></div>
+        <div class="sync-conetent content-div hidden" id="sync-conetent">
+          <input type="button" value="Backup" id="sync-download" />
+          <input type="button" value="Restore" id="sync-upload" />
+        </div>
+        <div class="configure-content content-div">
+          <input type="checkbox" id="setting1" checked />
+          <label for="setting1">Restore need confirm</label><br />
+        </div>
       </div>
-      <hr />
-      <div class="archive-remote-content contend-div">
-        <details>
-          <summary class="helper-text">Why archive?</summary>
-          <p>
-            1. May be useful for meta change.<br />
-            2. No data corruption (store in different files).<br />
-            3. Make team builder cleaner.
-          </p>
-        </details>
-        <form>
-          <div class="content-div">
-            <table>
-              <tr>
-                <th>Archive:</th>
-                <td id="arv-btn-cell">
-                  <input type="button" value="Merge From Backup" id="arv-cp" /><br>
-                  <input class="hidden" type="button" value="Append Selected" id="arv-p" />
-                </td>
-              </tr>
-            </table>
-          </div>
-      <input type="button" value="Pull archived Teams" id="arv-download" />
-          <div class="content-div">
-            <ul id="arv-teams">
-            </ul>
-          </div>
-        </form>
+      <div class="container-div contend-div">
+        <span class="container-title">Archive info:</span>
+        <div class="archive-remote-content contend-div">
+          <details>
+            <summary class="helper-text">Why archive?</summary>
+            <p>
+              1. May be useful for meta change.<br />
+              2. No data corruption (store in different files).<br />
+              3. Make team builder cleaner.
+            </p>
+          </details>
+          <form>
+            <div class="content-div">
+              <table>
+                <tr>
+                  <th>Archive:</th>
+                  <td id="arv-btn-cell">
+                    <input
+                      type="button"
+                      value="Merge From Backup"
+                      id="arv-cp"
+                    /><br />
+                    <input
+                      class="hidden"
+                      type="button"
+                      value="Append Selected"
+                      id="arv-p"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <input
+              type="button"
+              value="Pull archived Teams"
+              id="arv-download"
+            />
+            <div class="content-div">
+              <ul id="arv-teams"></ul>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
     <script src="webdav.js"></script>
