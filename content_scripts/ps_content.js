@@ -31,8 +31,6 @@ function injectAndRemoveScript(file_path, tag) {
 
     if (message.command === "reload") {
       let data = window.localStorage.getItem("showdown_teams");
-      console.log(data);
-      //return Promise.resolve({ data: data });
       sendResponse({data: data});
       return true;
     } else if (message.command === "update") {

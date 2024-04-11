@@ -1,6 +1,5 @@
 const archives_filename = "/arch.txt";
 //const browser = chrome;
-console.log(PSIcons);
 // helper
 function getPokemonIcon(pokemonString) {
   //const resourcePrefex = 'popup';
@@ -217,7 +216,6 @@ document.getElementById("arv-p").addEventListener("click", async (e) => {
       teamsToJoin.push(value);
     }
     let appendStr = teamsToJoin.join("\n");
-    console.log(appendStr);
 
     // combine append content
     let appendContent = appendStr;
