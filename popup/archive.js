@@ -57,6 +57,7 @@ function parse_team_info(teamString) {
       });
     }
   }
+  results["num_teams"] = (teamString.match(/\n/g) || []).length + 1;
   return results;
 }
 
@@ -87,12 +88,18 @@ function handle_unarchive(team) {
 
 function handle_remove_remote(team) {
   return (e) => {
-    //console.log('click remove team:'+team.raw);
     webdav_client(async (client) => {
       let exist_content = await client.getFileContents(archives_filename, {
         format: "text",
       });
-      exist_content = exist_content.replace(team.raw + "\n", "");
+      //console.log('try remove:'+team.raw.length);
+      let tryRemoveContent = exist_content.replace(team.raw + '\n', "");
+      if (tryRemoveContent.length < exist_content.length) {
+        exist_content = tryRemoveContent;
+      } else {
+        exist_content = exist_content.replace(team.raw, "");
+        exist_content = exist_content.trimEnd();
+      }
       await client.putFileContents(archives_filename, exist_content);
     });
     // remove the team div
@@ -101,7 +108,120 @@ function handle_remove_remote(team) {
   };
 }
 
-// copy from backup button: merge backup to archive
+// append selected button: select team to archive
+document.getElementById("arv-p").addEventListener("click", async (e) => {
+  const ul = document.getElementById("arv-teams");
+  ul.innerHTML = ""; // clear
+
+  let curTeams = await browser.tabs
+    .query({ currentWindow: true, active: true })
+    .then((tabs) => {
+      return browser.tabs.sendMessage(tabs[0].id, { command: "reload" });
+    });
+  let popupWindow = window.open("", "", "width=320,height=400");
+
+  let popupForm = document.createElement("form");
+  // init a checkbox form with submit button
+  let local_arv_info = parse_team_info(curTeams.data);
+  // append displayable team
+  for (let team of local_arv_info.displayable) {
+    let input = document.createElement("input");
+    input.type = "checkbox";
+    input.name = team.TeamNameWithFormat;
+    input.id = team.TeamNameWithFormat;
+    input.value = team.raw;
+    let label = document.createElement("label");
+    label.setAttribute("for", input.id);
+    label.innerText = `${team.TeamName} - ${team.FormatName}`;
+    popupForm.appendChild(input);
+    popupForm.appendChild(label);
+    popupForm.appendChild(document.createElement("br"));
+  }
+
+  // append text-only team
+  for (let team of local_arv_info["text-only"]) {
+    let input = document.createElement("input");
+    input.type = "checkbox";
+    input.name = team.TeamNameWithFormat;
+    input.id = team.TeamNameWithFormat;
+    input.value = team.raw;
+    let label = document.createElement("label");
+    label.setAttribute("for", input.id);
+    label.innerText = team.TeamNameWithFormat;
+    popupForm.appendChild(input);
+    popupForm.appendChild(label);
+    popupForm.appendChild(document.createElement("br"));
+  }
+
+  // submit button
+  let submitBtn = popupWindow.document.createElement("input");
+  submitBtn.type = "submit";
+  submitBtn.className = "popup-sel-btn";
+  submitBtn.value = "Submit";
+
+  // handle submit data
+  popupForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    //let formData = Object.fromEntries(new FormData(e.target).entries());
+    let teamsToJoin = [];
+    for (let [key, value] of new FormData(e.target).entries() ) { 
+      teamsToJoin.push(value);
+    }
+    let appendStr = teamsToJoin.join('\n');
+    console.log(appendStr);
+
+    // combine append content
+    let appendContent = appendStr;
+    let appendCount = teamsToJoin.length;
+    // remote append
+    webdav_client(async (client) => {
+      if ((await client.exists(archives_filename)) === true) {
+        // do the merge
+        let exist_content = await client.getFileContents(archives_filename, {
+          format: "text",
+        });
+        let { str: newContent, appendCount: mergeCount } = merge_teams(
+          exist_content,
+          appendContent
+        );
+        await client.putFileContents(archives_filename, newContent);
+        appendCount = mergeCount;
+      } else {
+        await client.putFileContents(archives_filename, appendContent);
+      }
+      browser.notifications.create("PokemonShowdown Sync", {
+        type: "basic",
+        iconUrl: "../icons/s1.png",
+        title: "Archive team",
+        message: `${appendCount} new team in selected archived.`,
+      });
+      //console.log(appendCount);
+    });
+    popupWindow.close();
+  });
+  popupForm.appendChild(submitBtn);
+  let popupBody = popupWindow.document.body;
+  popupBody.appendChild(popupForm);
+  popupWindow.focus();
+});
+
+// helper function to merge teams
+function merge_teams(sourceTeamStr, newTeamStr) {
+  let exist_teams = sourceTeamStr.split("\n");
+  let append_teams = newTeamStr.split("\n");
+  let append_count = 0;
+
+  for (let new_team of append_teams) {
+      // check is a new team?
+      if (exist_teams.indexOf(new_team) < 0) {
+      exist_teams.push(new_team);
+      append_count += 1;
+    }
+  }
+  return { str: exist_teams.join('\n'), appendCount: append_count };
+}
+
+// merge from backup button: merge backup to archive
 document.getElementById("arv-cp").addEventListener("click", (e) => {
   const ul = document.getElementById("arv-teams");
   ul.innerHTML = ""; // clear
@@ -116,18 +236,11 @@ document.getElementById("arv-cp").addEventListener("click", (e) => {
       let exist_content = await client.getFileContents(archives_filename, {
         format: "text",
       });
-      // is a new team ?
-      let exist_teams = exist_content.split("\n");
-      let append_teams = append_content.split("\n");
-      let append_count = 0;
-      for (let new_team of append_teams) {
-        if (exist_teams.indexOf(new_team) < 0) {
-          // check is a new team
-          exist_content += "\n" + new_team;
-          append_count += 1;
-        }
-      }
-      await client.putFileContents(archives_filename, exist_content);
+      let { str: newContent, appendCount: append_count } = merge_teams(
+        exist_content,
+        append_content
+      );
+      await client.putFileContents(archives_filename, newContent);
 
       browser.notifications.create("PokemonShowdown Sync", {
         type: "basic",
@@ -147,7 +260,6 @@ document.getElementById("arv-cp").addEventListener("click", (e) => {
           message: `All backup team archived.`,
         });
       } else {
-        // alert
         alert("There is no team data on remote, please backup first");
       }
     }
@@ -155,7 +267,7 @@ document.getElementById("arv-cp").addEventListener("click", (e) => {
 });
 
 // load team button: download team
-document.getElementById("arv-download").addEventListener("click", (e) => {
+document.getElementById("arv-pull").addEventListener("click", (e) => {
   // get remote webdav file info
   webdav_client(async (client) => {
     if ((await client.exists(archives_filename)) === true) {
@@ -169,6 +281,9 @@ document.getElementById("arv-download").addEventListener("click", (e) => {
       const ul = document.getElementById("arv-teams");
       ul.innerHTML = ""; // clear
       //
+      let info_li = document.createElement("li");
+      info_li.innerText = `Pulled ${remote_arv_info.num_teams} teams`;
+      ul.appendChild(info_li);
       // append displayable team
       for (let team of remote_arv_info.displayable) {
         let li = document.createElement("li");
@@ -202,6 +317,7 @@ document.getElementById("arv-download").addEventListener("click", (e) => {
         let li = document.createElement("li");
         li.innerText = team.TeamNameWithFormat;
         let p = document.createElement("p");
+        p.className = "arv-team-no-preview";
         let unarchiveBtn = document.createElement("input");
         unarchiveBtn.type = "button";
         unarchiveBtn.className = "arv-un-btn";
