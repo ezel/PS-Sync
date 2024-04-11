@@ -72,10 +72,13 @@ function parse_team_info(teamString) {
       }
       // parse pm names and icons
       for (let i = 0; i < 68 - 11; i += 11) {
-        let tmp = team.data[i];
-        let name = tmp.substring(tmp.indexOf("]") + 1, tmp.length);
-        res.PMNames.push(name);
-        res.IconNames.push(name);
+        let pmName = team.data[i+1];
+        if (pmName.length === 0) {
+          let tmp = team.data[i];
+          pmName = tmp.substring(tmp.indexOf("]") + 1, tmp.length);  
+        }
+        res.PMNames.push(pmName);
+        res.IconNames.push(pmName);
       }
       results.displayable.push(res);
     } else {
@@ -192,7 +195,7 @@ document.getElementById("arv-p").addEventListener("click", async (e) => {
     input.value = team.raw;
     let label = document.createElement("label");
     label.setAttribute("for", input.id);
-    label.innerText = team.TeamNameWithFormat;
+    label.innerHTML = `${team.TeamNameWithFormat} <br>no team preview`;
     oneTeamDiv.appendChild(input);
     oneTeamDiv.appendChild(label);
     popupForm.appendChild(oneTeamDiv);
@@ -364,6 +367,7 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
         li.innerText = team.TeamNameWithFormat;
         let p = document.createElement("p");
         p.className = "arv-team-no-preview";
+        p.innerText = ' No team preview';
         let unarchiveBtn = document.createElement("input");
         unarchiveBtn.type = "button";
         unarchiveBtn.className = "arv-un-btn";
@@ -374,6 +378,7 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
         removeBtn.className = "arv-rm-btn";
         removeBtn.value = "Remove";
         removeBtn.addEventListener("click", handle_remove_remote(team));
+        p.appendChild(document.createElement('br'));
         p.appendChild(unarchiveBtn);
         p.appendChild(removeBtn);
         li.appendChild(p);
