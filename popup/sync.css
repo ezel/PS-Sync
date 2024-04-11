@@ -72,7 +72,10 @@ ul#arv-teams li span.arv-team-format {
 ul#arv-teams li span.arv-team-name {
   font-weight: bold;
 }
-
+p.arv-team-preview, p.arv-team-no-preview {
+  margin-top: 0px;
+  margin-bottom: 4px;
+}
 p.arv-team-preview img {
   display: inline-block;
   width: 40px;

@@ -26,8 +26,8 @@ function injectAndRemoveScript(file_path, tag) {
 
   // message handler for popup extension
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("====> Message from the background script:");
-    console.log(message);
+    //console.log("====> Message from the background script:");
+    //console.log(message);
 
     if (message.command === "reload") {
       let data = window.localStorage.getItem("showdown_teams");

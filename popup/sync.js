@@ -26,7 +26,11 @@ const browser = chrome;
                     //{ browser.tabs.executeScript({file: "/popup/browser-polyfill.min.js"}); }
                 //browser.tabs.executeScript({file: "/content_scripts/ps-sync.js"})
                 //.then((e)=>{
-                    document.getElementById("sync-conetent").classList.remove('hidden');
+                    let hiddenTags = document.getElementsByClassName('hidden');
+                    for (let i=hiddenTags.length-1; i>=0; i--) {
+                        hiddenTags[i].classList.remove('hidden');
+                    }
+                    
                 //})
                 //.catch(onErrorItem);
             }
