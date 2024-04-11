@@ -76,8 +76,10 @@ p.arv-team-preview, p.arv-team-no-preview {
   margin-top: 0px;
   margin-bottom: 4px;
 }
-p.arv-team-preview img {
-  display: inline-block;
+span.arv-pm-preview {
   width: 40px;
   height: 30px;
+  margin: 0 -3px;
+  float: left;
+  overflow: visible;
 }
