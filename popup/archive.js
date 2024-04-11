@@ -2,7 +2,7 @@ const archives_filename = "/arch.txt";
 //const browser = chrome;
 // helper
 function getPokemonIcon(pokemonString) {
-  //const resourcePrefex = 'popup';
+  const resource = chrome.runtime.getURL("popup/pokemonicons-sheet.png");
   function getPokemonIconNum(id) {
     let num = 0;
     if (PSIcons.BattlePokemonSprites?.[id]?.num) {
@@ -25,7 +25,8 @@ function getPokemonIcon(pokemonString) {
 
   let top = Math.floor(num / 12) * 30;
   let left = (num % 12) * 40;
-  return `background:transparent url(pokemonicons-sheet.png?v16) no-repeat scroll -${left}px -${top}px`;
+  
+  return `background:transparent url(${resource}) no-repeat scroll -${left}px -${top}px`;
 }
 
 /* parse the team string, return
