@@ -135,9 +135,14 @@ function handle_remove_remote(team) {
     });
     // remove the team div
     let li = e.target.parentNode.parentNode;
-    if (li.tagName === "LI") li.replaceWith("");
+    if (li.tagName === "LI") {
+      li.replaceWith("");
+    } else if (li.tagName === 'TR') {
+      li.replaceWith("");
+    }
   };
 }
+
 
 // append selected button: select team to archive
 document.getElementById("arv-p").addEventListener("click", async (e) => {
@@ -152,7 +157,7 @@ document.getElementById("arv-p").addEventListener("click", async (e) => {
   let popupWindow = window.open(
     "",
     "",
-    "popup=1,width=320,height=400,top=0,left=0"
+    "popup=1,width=420,height=400,top=0,left=0"
   );
 
   let popupForm = document.createElement("form");
@@ -332,18 +337,23 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
       let info_li = document.createElement("li");
       info_li.innerText = `Pulled ${remote_arv_info.num_teams} teams`;
       ul.appendChild(info_li);
+
+      // init table
+      const pull_table = document.getElementById("arv-teams-table");
+      const pull_thead = document.createElement("tr");
+      pull_thead.innerHTML = '<th>Info</th><th>Preview</th>';
+      pull_table.appendChild(pull_thead);
+
       // append displayable team
       for (let team of remote_arv_info.displayable) {
-        let li = document.createElement("li");
-        li.innerHTML = `<span class="arv-team-name">${team.TeamName}</span><span class="arv-team-format">(${team.FormatName})</span>`;
-        let p = document.createElement("p");
-        p.className = "arv-team-preview";
-        for (let i = 0; i < team.PMNames.length; i++) {
-          let span1 = document.createElement("span");
-          span1.style = `${getPokemonIcon(team.IconNames[i])}`;
-          span1.className = "arv-pm-preview";
-          p.appendChild(span1);
-        }
+        let tr = document.createElement("tr");
+        let td_info = document.createElement("td");
+        let td_prev = document.createElement("td");
+
+        // basic info
+        td_info.innerHTML = `<span class="arv-team-format">${team.FormatName}</span><br><span class="arv-team-name">${team.TeamName}</span><br>`;
+
+        // 2 buttons
         let unarchiveBtn = document.createElement("input");
         unarchiveBtn.type = "button";
         unarchiveBtn.className = "arv-un-btn";
@@ -354,11 +364,28 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
         removeBtn.className = "arv-rm-btn";
         removeBtn.value = "Remove";
         removeBtn.addEventListener("click", handle_remove_remote(team));
-        p.appendChild(unarchiveBtn);
-        p.appendChild(removeBtn);
-        li.appendChild(p);
-        ul.appendChild(li);
+        td_info.appendChild(unarchiveBtn);
+        td_info.appendChild(removeBtn);
+
+        // team-preview
+        let p = document.createElement("p");
+        p.className = "arv-team-preview";
+        for (let i = 0; i < team.PMNames.length; i++) {
+          let span1 = document.createElement("span");
+          span1.style = `${getPokemonIcon(team.IconNames[i])}`;
+          span1.className = "arv-pm-preview";
+          p.appendChild(span1);
+        }
+        td_prev.appendChild(p);
+
+        // append to tr
+        tr.appendChild(td_info);
+        tr.appendChild(td_prev);
+        pull_table.appendChild(tr);
       }
+
+      // sort the table
+      sortTable(pull_table);
 
       // append text-only team
       for (let team of remote_arv_info["text-only"]) {
@@ -366,7 +393,7 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
         li.innerText = team.TeamNameWithFormat;
         let p = document.createElement("p");
         p.className = "arv-team-no-preview";
-        p.innerText = ' No team preview';
+        p.innerText = ' No preview';
         let unarchiveBtn = document.createElement("input");
         unarchiveBtn.type = "button";
         unarchiveBtn.className = "arv-un-btn";
@@ -388,3 +415,38 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
     }
   });
 });
+
+function sortTable(tableElement) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = tableElement;
+  switching = true;
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      x = rows[i].getElementsByTagName("TD")[0];
+      y = rows[i + 1].getElementsByTagName("TD")[0];
+      // Check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        // If so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
