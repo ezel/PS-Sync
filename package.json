@@ -1,6 +1,6 @@
 {
   "name": "ps-sync",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "sync [PokemonShowdown](https://play.pokemonshowdown.com/)'s team with your webdav",
   "main": "index.js",
   "scripts": {

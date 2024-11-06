@@ -51,13 +51,14 @@ td#arv-btn-cell input {
 ul#arv-teams {
   padding-left: 4px;
 }
-table#arv-teams-table {
+table.arv-teams-table {
   padding-left: 4px;
   border-collapse: collapse;
   table-layout: fixed;
   width: 200px;
 }
-table#arv-teams-table th, table#arv-teams-table td {
+table.arv-teams-table th,
+table.arv-teams-table td {
   border: solid 1px black;
   overflow-x: overlay;
   word-break: break-all;
@@ -78,26 +79,27 @@ ul#arv-teams input.arv-rm-btn {
 }
 ul#arv-teams input.arv-un-btn,
 ul#arv-teams input.arv-rm-btn,
-table#arv-teams-table input.arv-un-btn,
-table#arv-teams-table input.arv-rm-btn {
+table.arv-teams-table input.arv-un-btn,
+table.arv-teams-table input.arv-rm-btn {
   font-size: 12px;
   padding: 0px;
 }
-table#arv-teams-table input.arv-un-btn {
+table.arv-teams-table input.arv-un-btn {
   width: 66px;
 }
-table#arv-teams-table input.arv-rm-btn {
+table.arv-teams-table input.arv-rm-btn {
   width: 50px;
 }
 
-table#arv-teams-table td span.arv-team-name {
+table.arv-teams-table td span.arv-team-name {
   color: #5914d4;
   font-size: 10px;
 }
-table#arv-teams-table td span.arv-team-format {
+table.arv-teams-table td span.arv-team-format {
   font-weight: bold;
 }
-p.arv-team-preview, p.arv-team-no-preview {
+p.arv-team-preview,
+p.arv-team-no-preview {
   font-size: 10px;
   color: red;
   margin-top: 0px;

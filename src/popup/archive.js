@@ -25,7 +25,7 @@ function getPokemonIcon(pokemonString) {
 
   let top = Math.floor(num / 12) * 30;
   let left = (num % 12) * 40;
-  
+
   return `background:transparent url(${resource}) no-repeat scroll -${left}px -${top}px`;
 }
 
@@ -72,10 +72,10 @@ function parse_team_info(teamString) {
       }
       // parse pm names and icons
       for (let i = 0; i < 68 - 11; i += 11) {
-        let pmName = team.data[i+1];
+        let pmName = team.data[i + 1];
         if (pmName.length === 0) {
           let tmp = team.data[i];
-          pmName = tmp.substring(tmp.indexOf("]") + 1, tmp.length);  
+          pmName = tmp.substring(tmp.indexOf("]") + 1, tmp.length);
         }
         res.PMNames.push(pmName);
         res.IconNames.push(pmName);
@@ -137,12 +137,11 @@ function handle_remove_remote(team) {
     let li = e.target.parentNode.parentNode;
     if (li.tagName === "LI") {
       li.replaceWith("");
-    } else if (li.tagName === 'TR') {
+    } else if (li.tagName === "TR") {
       li.replaceWith("");
     }
   };
 }
-
 
 // append selected button: select team to archive
 document.getElementById("arv-p").addEventListener("click", async (e) => {
@@ -339,53 +338,71 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
       ul.appendChild(info_li);
 
       // init table
-      const pull_table = document.getElementById("arv-teams-table");
-      const pull_thead = document.createElement("tr");
-      pull_thead.innerHTML = '<th>Info</th><th>Preview</th>';
-      pull_table.appendChild(pull_thead);
+      const content_div = document.getElementById("arv-teams-div");
+      function init_arv_teams_table(displayableTeams) {
+        const pull_table = document.createElement("table"); //("arv-teams-table");
+        pull_table.className = "arv-teams-table";
+        const cp = document.createElement("colgroup");
+        const col1 = document.createElement("col");
+        col1.className = "arv-teams-table-col1";
+        const col2 = document.createElement("col");
+        col2.className = "arv-teams-table-col2";
+        cp.appendChild(col1);
+        cp.appendChild(col2);
+        pull_table.appendChild(cp);
 
-      // append displayable team
-      for (let team of remote_arv_info.displayable) {
-        let tr = document.createElement("tr");
-        let td_info = document.createElement("td");
-        let td_prev = document.createElement("td");
+        const pull_thead = document.createElement("tr");
+        pull_thead.innerHTML = "<th>Info</th><th>Preview</th>";
+        pull_table.appendChild(pull_thead);
 
-        // basic info
-        td_info.innerHTML = `<span class="arv-team-format">${team.FormatName}</span><br><span class="arv-team-name">${team.TeamName}</span><br>`;
+        // append displayable team
+        for (let team of remote_arv_info.displayable) {
+          let tr = document.createElement("tr");
+          let td_info = document.createElement("td");
+          let td_prev = document.createElement("td");
 
-        // 2 buttons
-        let unarchiveBtn = document.createElement("input");
-        unarchiveBtn.type = "button";
-        unarchiveBtn.className = "arv-un-btn";
-        unarchiveBtn.value = "Unarchive";
-        unarchiveBtn.addEventListener("click", handle_unarchive(team));
-        let removeBtn = document.createElement("input");
-        removeBtn.type = "button";
-        removeBtn.className = "arv-rm-btn";
-        removeBtn.value = "Remove";
-        removeBtn.addEventListener("click", handle_remove_remote(team));
-        td_info.appendChild(unarchiveBtn);
-        td_info.appendChild(removeBtn);
+          // basic info
+          td_info.innerHTML = `<span class="arv-team-format">${team.FormatName}</span><br><span class="arv-team-name">${team.TeamName}</span><br>`;
 
-        // team-preview
-        let p = document.createElement("p");
-        p.className = "arv-team-preview";
-        for (let i = 0; i < team.PMNames.length; i++) {
-          let span1 = document.createElement("span");
-          span1.style = `${getPokemonIcon(team.IconNames[i])}`;
-          span1.className = "arv-pm-preview";
-          p.appendChild(span1);
+          // 2 buttons
+          let unarchiveBtn = document.createElement("input");
+          unarchiveBtn.type = "button";
+          unarchiveBtn.className = "arv-un-btn";
+          unarchiveBtn.value = "Unarchive";
+          unarchiveBtn.addEventListener("click", handle_unarchive(team));
+          let removeBtn = document.createElement("input");
+          removeBtn.type = "button";
+          removeBtn.className = "arv-rm-btn";
+          removeBtn.value = "Remove";
+          removeBtn.addEventListener("click", handle_remove_remote(team));
+          td_info.appendChild(unarchiveBtn);
+          td_info.appendChild(removeBtn);
+
+          // team-preview
+          let p = document.createElement("p");
+          p.className = "arv-team-preview";
+          for (let i = 0; i < team.PMNames.length; i++) {
+            let span1 = document.createElement("span");
+            span1.style = `${getPokemonIcon(team.IconNames[i])}`;
+            span1.className = "arv-pm-preview";
+            p.appendChild(span1);
+          }
+          td_prev.appendChild(p);
+
+          // append to tr
+          tr.appendChild(td_info);
+          tr.appendChild(td_prev);
+          pull_table.appendChild(tr);
         }
-        td_prev.appendChild(p);
 
-        // append to tr
-        tr.appendChild(td_info);
-        tr.appendChild(td_prev);
-        pull_table.appendChild(tr);
+        return pull_table;
       }
 
+      pull_table = init_arv_teams_table(remote_arv_info.displayable);
+      content_div.appendChild(pull_table);
+
       // sort the table
-      sortTable(pull_table);
+      //sortTable(pull_table);
 
       // append text-only team
       for (let team of remote_arv_info["text-only"]) {
@@ -393,7 +410,7 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
         li.innerText = team.TeamNameWithFormat;
         let p = document.createElement("p");
         p.className = "arv-team-no-preview";
-        p.innerText = ' No preview';
+        p.innerText = " No preview";
         let unarchiveBtn = document.createElement("input");
         unarchiveBtn.type = "button";
         unarchiveBtn.className = "arv-un-btn";
@@ -404,7 +421,7 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
         removeBtn.className = "arv-rm-btn";
         removeBtn.value = "Remove";
         removeBtn.addEventListener("click", handle_remove_remote(team));
-        p.appendChild(document.createElement('br'));
+        p.appendChild(document.createElement("br"));
         p.appendChild(unarchiveBtn);
         p.appendChild(removeBtn);
         li.appendChild(p);
@@ -428,7 +445,7 @@ function sortTable(tableElement) {
     rows = table.rows;
     /* Loop through all table rows (except the
     first, which contains table headers): */
-    for (i = 1; i < (rows.length - 1); i++) {
+    for (i = 1; i < rows.length - 1; i++) {
       // Start by saying there should be no switching:
       shouldSwitch = false;
       /* Get the two elements you want to compare,

@@ -24,7 +24,7 @@
           <input type="reset" value="Clear" id="remote-clear" />
         </form>
       </div>
-      <div class="container-div contend-div">
+      <div class="container-div">
         <span class="container-title">Sync info:</span>
         <div class="data-container" id="synctime"></div>
         <div class="sync-conetent content-div hidden" id="sync-conetent">
@@ -36,9 +36,9 @@
           <label for="setting1">Restore need confirm</label><br />
         </div>
       </div>
-      <div class="container-div contend-div">
+      <div class="container-div">
         <span class="container-title">Archive info:</span>
-        <div class="archive-remote-content contend-div">
+        <div class="archive-remote-content">
           <details>
             <summary class="helper-text">Why archive?</summary>
             <p>
@@ -73,13 +73,8 @@
               value="Pull archived Teams"
               id="arv-pull"
             />
-            <div class="content-div">
+            <div class="content-div" id="arv-teams-div">
               <ul id="arv-teams"></ul>
-              <table id="arv-teams-table">
-                <colgroup>
-                <col class="arv-teams-table-col1">
-                <col class="arv-teams-table-col2">
-              </colgroup></table>
             </div>
           </form>
         </div>
