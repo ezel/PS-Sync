@@ -356,7 +356,7 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
         pull_table.appendChild(pull_thead);
 
         // append displayable team
-        for (let team of remote_arv_info.displayable) {
+        for (let team of displayableTeams) {
           let tr = document.createElement("tr");
           let td_info = document.createElement("td");
           let td_prev = document.createElement("td");
@@ -394,15 +394,39 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
           tr.appendChild(td_prev);
           pull_table.appendChild(tr);
         }
-
         return pull_table;
       }
 
-      pull_table = init_arv_teams_table(remote_arv_info.displayable);
-      content_div.appendChild(pull_table);
+      // first traverse 
+      // 1. get all team format FormatName
+      const formatNameSet = new Set();
+      let teamsByFormat = {};
+      for (let team of remote_arv_info.displayable) {
+        let formatName = team.FormatName;
+        formatNameSet.add(formatName);
 
+        // 2. group teams by format
+        if (formatName in teamsByFormat) {
+          teamsByFormat[formatName].push(team);
+        } else {
+          teamsByFormat[formatName] = [team];
+        }
+      }
+
+      // 3. show teams by format in order
+      const reverseFormatName = [...formatNameSet].sort((a, b)=> {if (a<b) return 1; else return -1;});
+      for (let fn of reverseFormatName) {
+        const detail_table = document.createElement('details');
+        const detail_table_summary = document.createElement('summary');
+        detail_table_summary.className = "helper-text";
+        detail_table_summary.innerText = `${fn} (${teamsByFormat[fn].length})`;
+        detail_table.appendChild(detail_table_summary);
+        const pull_table = init_arv_teams_table(teamsByFormat[fn]);
+        detail_table.appendChild(pull_table);
+        content_div.appendChild(detail_table);
+      }
       // sort the table
-      //sortTable(pull_table);
+      // sortTable(pull_table);
 
       // append text-only team
       for (let team of remote_arv_info["text-only"]) {
@@ -428,7 +452,7 @@ document.getElementById("arv-pull").addEventListener("click", (e) => {
         ul.appendChild(li);
       }
     } else {
-      sync_div.innerText = "no archived file on webdav!";
+      sync_div.innerText = "No archived file on webdav!";
     }
   });
 });

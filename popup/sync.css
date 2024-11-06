@@ -20,7 +20,7 @@ div.container-div {
   padding-top: 4px;
   padding-bottom: 8px;
   margin-left: -8px;
-  padding-left: 8px;
+  padding-left: 6px;
 }
 span.container-title {
   font-size: 12px;
@@ -52,7 +52,7 @@ ul#arv-teams {
   padding-left: 4px;
 }
 table.arv-teams-table {
-  padding-left: 4px;
+  margin-bottom: 12px;
   border-collapse: collapse;
   table-layout: fixed;
   width: 200px;
